@@ -54,12 +54,11 @@ class TicTacToeEnv3x3(gym.Env):
         self.player = 1
 
         observation = self._get_obs()
-        info = self._get_info()
 
         if self.render_mode == "human":
             self._render_frame()
 
-        return observation, info
+        return observation
 
     def check_win(self):
         for i in range(3):
