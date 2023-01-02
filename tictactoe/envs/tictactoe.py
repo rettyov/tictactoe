@@ -26,6 +26,8 @@ class TicTacToeEnv3x3(gym.Env):
         # We have 9 actions, corresponding to each tile
         self.action_space = spaces.Discrete(9)
 
+        self.observation_space = spaces.Box(-1, 1, shape=(2, ), dtype=np.int64)
+
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
 
@@ -72,7 +74,7 @@ class TicTacToeEnv3x3(gym.Env):
         return 0
 
     def step(self, action):
-        x, y = action
+        x, y = action // 3, action % 3
         if self.board[x][y] != 0:
             observation = self._get_obs()
             info = self._get_info()
