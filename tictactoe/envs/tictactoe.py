@@ -73,6 +73,9 @@ class TicTacToeEnv3x3(gym.Env):
             return self.board[0][2]
         return 0
 
+    def check_tie(self):
+        return not any(self.board.flatten() == 0)
+
     def step(self, action):
         x, y = action // 3, action % 3
         if self.board[x][y] != 0:
@@ -82,8 +85,9 @@ class TicTacToeEnv3x3(gym.Env):
         self.board[x][y] = self.player
         self.player *= -1
 
-        winner = self.check_win()
-        terminated = bool(winner != 0)
+        is_tie = self.check_tie()
+        winner = 0 if is_tie else self.check_win()
+        terminated = (winner != 0) or is_tie
 
         reward = 0
         if terminated:
