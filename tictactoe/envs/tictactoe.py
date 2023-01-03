@@ -26,7 +26,7 @@ class TicTacToeEnv3x3(gym.Env):
         # We have 9 actions, corresponding to each tile
         self.action_space = spaces.Discrete(9)
 
-        self.observation_space = spaces.Box(-1, 1, shape=(2, ), dtype=np.int64)
+        self.observation_space = spaces.Box(-1, 1, shape=(3, 3), dtype=np.int64)
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -42,10 +42,10 @@ class TicTacToeEnv3x3(gym.Env):
         self.clock = None
 
     def _get_obs(self):
-        return {"player": self.player, "board": self.board}
+        return self.board
 
     def _get_info(self):
-        return {}
+        return {'player': self.player}
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -54,11 +54,12 @@ class TicTacToeEnv3x3(gym.Env):
         self.player = 1
 
         observation = self._get_obs()
+        info = self._get_info()
 
         if self.render_mode == "human":
             self._render_frame()
 
-        return observation
+        return observation, info
 
     def check_win(self):
         for i in range(3):
@@ -79,18 +80,14 @@ class TicTacToeEnv3x3(gym.Env):
             info = self._get_info()
             return observation, 0, False, False, info
         self.board[x][y] = self.player
-        if self.player == 1:
-            self.player = -1
-        else:
-            self.player = 1
+        self.player *= -1
 
         winner = self.check_win()
-        terminated = winner != 0
+        terminated = bool(winner != 0)
 
         reward = 0
         if terminated:
-            reward = (self.player == winner) * 6 - 3
-        reward -= 1
+            reward = (-self.player == winner) * 2 - 1
 
         observation = self._get_obs()
         info = self._get_info()
