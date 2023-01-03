@@ -18,7 +18,7 @@ class TicTacToeEnv3x3(gym.Env):
     def __init__(self, render_mode=None):
         self.window_size = 900  # The size of the PyGame window
 
-        self.board = np.zeros((3, 3))
+        self.board = np.zeros((3, 3), dtype=np.int64)
 
         # player can be 1 or -1
         self.player = 1
@@ -50,7 +50,7 @@ class TicTacToeEnv3x3(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
 
-        self.board = np.zeros((3, 3))
+        self.board = np.zeros((3, 3), dtype=np.int64)
         self.player = 1
 
         observation = self._get_obs()
