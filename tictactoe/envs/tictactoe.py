@@ -62,16 +62,20 @@ class TicTacToeEnv3x3(gym.Env):
         return observation, info
 
     def check_win(self):
+        """
+        Функция проверяет состояние на победу
+        :return: возвращает 1 если игрок победил, иначе 0
+        """
         for i in range(3):
             if self.board[i][0] == self.board[i][1] == self.board[i][2] and self.board[i][0] != 0:
-                return self.board[i][0]
+                return True
             if self.board[0][i] == self.board[1][i] == self.board[2][i] and self.board[0][i] != 0:
-                return self.board[0][i]
+                return True
         if self.board[0][0] == self.board[1][1] == self.board[2][2] and self.board[0][0] != 0:
-            return self.board[0][0]
+            return True
         if self.board[0][2] == self.board[1][1] == self.board[2][0] and self.board[0][2] != 0:
-            return self.board[0][2]
-        return 0
+            return True
+        return False
 
     def check_tie(self):
         return not any(self.board.flatten() == 0)
@@ -86,12 +90,10 @@ class TicTacToeEnv3x3(gym.Env):
         self.player *= -1
 
         is_tie = self.check_tie()
-        winner = 0 if is_tie else self.check_win()
-        terminated = (winner != 0) or is_tie
+        win = self.check_win()
+        terminated = win or is_tie
 
-        reward = 0
-        if terminated:
-            reward = (-self.player == winner) * 2 - 1
+        reward = int(win) if terminated else 0
 
         observation = self._get_obs()
         info = self._get_info()
